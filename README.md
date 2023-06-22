@@ -6,7 +6,6 @@
 
 **其实，可以直接使用 px4 官方提供的 iris_depth_camera 模型进行无人机仿真。**
 
-
 ## 快速开始
 
 在已经安装 ros、px4 环境的 ubuntu 18.04 上编译测试通过。
@@ -18,6 +17,7 @@ catkin_make
 ```
 
 你可以在编译完成后，在当前终端中通过指令快速查看是否编译成功。
+
 ```bash
 source devel/setup.bash && roslaunch realsense_ros_gazebo simulation.launch
 ```
@@ -25,7 +25,6 @@ source devel/setup.bash && roslaunch realsense_ros_gazebo simulation.launch
 <p align="center">
   <img src="pictures/simulation.png" width = "400" />
 </p>
-
 
 你也可以输入以下命令,进行查看。
 
@@ -39,20 +38,20 @@ source devel/setup.bash && roslaunch realsense_ros_gazebo simulation_D435i_sdf.l
 
 ## 环境配置
 
-> 配置环境，可以在gazebo仿真中加载带有 D435i 的 iris 无人机。
+> 配置环境，可以在 gazebo 仿真中加载带有 D435i 的 iris 无人机。
 
 1. 复制相机插件 librealsense_gazebo_plugin.so 到 px4 的动态链接库目录中。
 
-```bash
+````bash
 cp ${YOUR_WORKSPACE_PATH}/devel/lib/librealsense_gazebo_plugin.so ${YOUR_PX4_PATH}/build/px4_sitl_default/build_gazebo/
 ```3
 
-2. 复制相机模型 D435i 和飞机模型 iris_D435i 到 px4 的模型库中。 
+2. 复制相机模型 D435i 和飞机模型 iris_D435i 到 px4 的模型库中。
 
 ```bash
 cp -r ${YOUR_WORKSPACE_PATH}/src/realsense_ros_gazebo/sdf/D435i ${YOUR_PX4_PATH}/Tools/sitl_gazebo/models/
 cp -r ${YOUR_WORKSPACE_PATH}/src/realsense_ros_gazebo/sdf/iris_D435i ${YOUR_PX4_PATH}/Tools/sitl_gazebo/models/
-```
+````
 
 注意：在安装 PX4 时应该已经在 `.bashrc` 文件中配置了相关环境，文件的最后应有如下命令（`/home/user/PX4_Firmware` 替换为你自己的路径，即上文的 `${YOUR_PX4_PATH}`）：
 
@@ -88,26 +87,22 @@ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/home/user/PX4_Firmware/Tools/sitl_gaz
   <img src="pictures/rostopic.png" width = "300" />
 </p>
 
-
 ## 相机前方的图像界面显示调整
 
-通过对相机模型 `D435i.sdf` 文件中图示属性的调整，可以选择 `显示` 或 `隐藏` 相机前方的实时相机界面。 
+通过对相机模型 `D435i.sdf` 文件中图示属性的调整，可以选择 `显示` 或 `隐藏` 相机前方的实时相机界面。
 
 - `<visualize>1</visualize>` 时为 `显示`；
 - `<visualize>0</visualize>` 时为 `隐藏`；
 
-
 <p align="center">
   <img src="pictures/D435i.png" width = "400" />
 </p>
-
 
 隐藏时的效果如下：
 
 <p align="center">
   <img src="pictures/iris_D435i_without_front_viewer.png" width = "400" />
 </p>
-
 
 ## 对原仓库文件的修改说明
 
@@ -117,6 +112,12 @@ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/home/user/PX4_Firmware/Tools/sitl_gaz
   <img src="pictures/iris_D435i_modify.png" width = "400" />
 </p>
 
-- 将 `<pose>0.25 0 0 1.5708 0 1.5708</pose>` 修改为`<pose>0.12 0 0 1.5708 0 1.5708</pose>` 
+- 将 `<pose>0.25 0 0 1.5708 0 1.5708</pose>` 修改为`<pose>0.12 0 0 1.5708 0 1.5708</pose>`
 
 - 将 `<child>D435i::realsense_camera_link</child>` 修改为 `<child>D435i::camera_link</child>`
+
+## Update June 22
+
+- Modify plugins src file to enable <robotNamespace> element.
+- Create new `sdf` and `sdf.jinja` file to make the multi-robot simulation possible
+- Add multi-robot launch file accordingly (You need to copy them to your repository)
