@@ -1,14 +1,16 @@
 # realsense_ros_gazebo
 
-> 代码克隆于 [Intel RealSense Gazebo/ROS](https://gitee.com/nie_xun/realsense_ros_gazebo?_from=gitee_search)
+> Code cloned from Intel RealSense Gazebo/ROS
 
-本仓库提供 d435i 相机模型和 iris_D435i 模型用于在 gazebo 中进行仿真模拟。对原模型配置文件修改了一点参数。
+[中文](./README_zh.md)
 
-**其实，可以直接使用 px4 官方提供的 iris_depth_camera 模型进行无人机仿真。**
+This repository provides the d435i camera model and iris_D435i model for simulation in Gazebo. Some parameters have been modified in the original model configuration files.
 
-## 快速开始
+In fact, you can directly use the iris_depth_camera model provided by the official px4 for drone simulation.
 
-在已经安装 ros、px4 环境的 ubuntu 18.04 上编译测试通过。
+## Quick Start
+
+Tested and compiled on Ubuntu 18.04 with ROS and px4 environment installed.
 
 ```bash
 git clone https://github.com/tugepaopaoo/realsense_ros_gazebo.git
@@ -16,7 +18,7 @@ cd realsense_ros_gazebo
 catkin_make
 ```
 
-你可以在编译完成后，在当前终端中通过指令快速查看是否编译成功。
+After the compilation is complete, you can quickly check if it was successful by running the following command in the current terminal:
 
 ```bash
 source devel/setup.bash && roslaunch realsense_ros_gazebo simulation.launch
@@ -25,8 +27,7 @@ source devel/setup.bash && roslaunch realsense_ros_gazebo simulation.launch
 <p align="center">
   <img src="pictures/simulation.png" width = "400" />
 </p>
-
-你也可以输入以下命令,进行查看。
+You can also run the following command to view the simulation:
 
 ```bash
 source devel/setup.bash && roslaunch realsense_ros_gazebo simulation_D435i_sdf.launch
@@ -36,88 +37,84 @@ source devel/setup.bash && roslaunch realsense_ros_gazebo simulation_D435i_sdf.l
   <img src="pictures/simulation_D435i_sdf.png" width = "400" />
 </p>
 
-## 环境配置
+## Environment Configuration
 
-> 配置环境，可以在 gazebo 仿真中加载带有 D435i 的 iris 无人机。
+Configuring the environment to load iris unmanned aircraft with D435i in Gazebo simulation.
 
-1. 复制相机插件 librealsense_gazebo_plugin.so 到 px4 的动态链接库目录中。
+Copy the camera plugin `librealsense_gazebo_plugin.so` to the dynamic library directory of px4.
 
-````bash
+```bash
 cp ${YOUR_WORKSPACE_PATH}/devel/lib/librealsense_gazebo_plugin.so ${YOUR_PX4_PATH}/build/px4_sitl_default/build_gazebo/
-```3
+```
 
-2. 复制相机模型 D435i 和飞机模型 iris_D435i 到 px4 的模型库中。
+Copy the camera model D435i and aircraft model `iris_D435i` to the model library of px4.
 
 ```bash
 cp -r ${YOUR_WORKSPACE_PATH}/src/realsense_ros_gazebo/sdf/D435i ${YOUR_PX4_PATH}/Tools/sitl_gazebo/models/
 cp -r ${YOUR_WORKSPACE_PATH}/src/realsense_ros_gazebo/sdf/iris_D435i ${YOUR_PX4_PATH}/Tools/sitl_gazebo/models/
-````
+```
 
-注意：在安装 PX4 时应该已经在 `.bashrc` 文件中配置了相关环境，文件的最后应有如下命令（`/home/user/PX4_Firmware` 替换为你自己的路径，即上文的 `${YOUR_PX4_PATH}`）：
+Note: When installing PX4, you should have already configured the relevant environment in the `.bashrc` file. The file should have the following commands at the end (`/home/user/PX4_Firmware` should be replaced with your own path, i.e., `${YOUR_PX4_PATH}` mentioned above):
 
 ```bash
 source /home/user/PX4_Firmware/Tools/setup_gazebo.bash /home/hahaha/PX4_Firmware /home/hahaha/PX4_Firmware/build/px4_sitl_default
 export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/home/user/PX4_Firmware
 export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:/home/user/PX4_Firmware/Tools/sitl_gazebo
-
 ```
 
-## 启动 Gazebo 仿真
+## Launch Gazebo Simulation
 
-修改 `${YOUR_PX4_PATH}/launch` 路径下 `mavros_posix_sitl.launch` 文件，将 `<arg name="sdf" default=" "/>` 中的模型替换为我们上面复制到 px4 中的 iris_D435i.sdf 模型，其余保持不变，替换部分修改后如下：
+Modify the `mavros_posix_sitl.launch` file in the `${YOUR_PX4_PATH}/launch` directory. Replace the model in `<arg name="sdf" default=" "/> with the iris_D435i.sdf` model copied to px4, and keep the rest unchanged. The modified part should look like the following:
 
-```bash
-    <!-- vehicle model and world -->
-    <arg name="est" default="ekf2"/>
-    <arg name="vehicle" default="iris"/>
-    <arg name="world" default="$(find mavlink_sitl_gazebo)/worlds/empty.world"/>
-    <arg name="sdf" default="$(find mavlink_sitl_gazebo)/models/iris_D435i/iris_D435i.sdf"/>
-
+```xml ￼
+<!-- vehicle model and world -->
+<arg name="est" default="ekf2"/>
+<arg name="vehicle" default="iris"/>
+<arg name="sdf" default="$(find mavlink_sitl_gazebo)/models/iris_D435i/iris_D435i.sdf"/>
+<arg name="world" default="$(find mavlink_sitl_gazebo)/worlds/empty.world"/>
 ```
 
-终端中输入命令，即可在 gazebo 看见 iris_D435i.sdf 模型。
+In the terminal, run the command to see the `iris_D435i.sdf` model in Gazebo.
 
 <p align="center">
   <img src="pictures/iris_D435i.png" width = "400" />
 </p>
-
-新开一个终端通过 `rostopic list`，即可查看到相机的相关话题消息。
+In a new terminal, you can use the command rostopic list to see the relevant camera topic messages.
 
 <p align="center">
   <img src="pictures/rostopic.png" width = "300" />
 </p>
 
-## 相机前方的图像界面显示调整
+## Adjustment of Image Display in Front of the Camera
 
-通过对相机模型 `D435i.sdf` 文件中图示属性的调整，可以选择 `显示` 或 `隐藏` 相机前方的实时相机界面。
+By adjusting the graphical properties in the camera model D435i.sdf file, you can choose to either display or hide the real-time camera view in front of the camera.
 
-- `<visualize>1</visualize>` 时为 `显示`；
-- `<visualize>0</visualize>` 时为 `隐藏`；
+`<visualize>1</visualize>` for display;
+`<visualize>0</visualize>` for hide;
 
 <p align="center">
   <img src="pictures/D435i.png" width = "400" />
 </p>
 
-隐藏时的效果如下：
+The effect when hidden is as follows:
 
 <p align="center">
   <img src="pictures/iris_D435i_without_front_viewer.png" width = "400" />
 </p>
 
-## 对原仓库文件的修改说明
+## Change Log
 
-只对原仓库中 `iris_D435i.sdf` 文件进行了修改。
+- Origin
 
-<p align="center">
-  <img src="pictures/iris_D435i_modify.png" width = "400" />
-</p>
+  - Only modifications were made to the iris_D435i.sdf file in the original repository.
+  <p align="center">
+    <img src="pictures/iris_D435i_modify.png" width = "400" />
+  </p>
+  Changed `<pose>0.25 0 0 1.5708 0 1.5708</pose>` to `<pose>0.12 0 0 1.5708 0 1.5708</pose>`
 
-- 将 `<pose>0.25 0 0 1.5708 0 1.5708</pose>` 修改为`<pose>0.12 0 0 1.5708 0 1.5708</pose>`
+  Changed `<child>D435i::realsense_camera_link</child>` to `<child>D435i::camera_link</child>`
 
-- 将 `<child>D435i::realsense_camera_link</child>` 修改为 `<child>D435i::camera_link</child>`
-
-## Update June 22
-
-- Modify plugins src file to enable <robotNamespace> element.
-- Create new `sdf` and `sdf.jinja` file to make the multi-robot simulation possible
-- Add multi-robot launch file accordingly (You need to copy them to your repository)
+- June 22, 2023
+  - Modify plugins src file to enable `<robotNamespace>` element.
+  - Create new `sdf` and `sdf.jinja` file to make the multi-robot simulation possible
+  - Add multi-robot launch file accordingly (You need to copy them to your repository)
