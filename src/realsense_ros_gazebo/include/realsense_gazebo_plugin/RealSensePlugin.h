@@ -45,7 +45,7 @@ struct CameraParams {
 /// \brief A plugin that simulates Real Sense camera streams.
 class RealSensePlugin : public ModelPlugin {
   /// \brief Constructor.
-public:
+ public:
   RealSensePlugin();
 
   /// \brief Destructor.
@@ -64,10 +64,9 @@ public:
 
   /// \brief Callback that publishes a received Camera Frame as an
   /// ImageStamped message.
-  virtual void OnNewFrame(const rendering::CameraPtr cam,
-                          const transport::PublisherPtr pub);
+  virtual void OnNewFrame(const rendering::CameraPtr cam, const transport::PublisherPtr pub);
 
-protected:
+ protected:
   /// \brief Pointer to the model containing the plugin.
   physics::ModelPtr rsModel;
 
@@ -85,6 +84,9 @@ protected:
 
   /// \brief Pointer to the Infrared2 Camera Renderer.
   rendering::CameraPtr ired2Cam;
+
+  /// \brief String to the robot namespace.
+  std::string robotNamespace{""};
 
   /// \brief String to hold the camera prefix
   std::string prefix;
@@ -124,9 +126,9 @@ protected:
 
   std::map<std::string, CameraParams> cameraParamsMap_;
 
-  bool pointCloud_ = false;
+  bool        pointCloud_ = false;
   std::string pointCloudTopic_;
-  double pointCloudCutOff_, pointCloudCutOffMax_;
+  double      pointCloudCutOff_, pointCloudCutOffMax_;
 
   double colorUpdateRate_;
   double infraredUpdateRate_;
@@ -135,5 +137,5 @@ protected:
   float rangeMinDepth_;
   float rangeMaxDepth_;
 };
-}
+}  // namespace gazebo
 #endif
